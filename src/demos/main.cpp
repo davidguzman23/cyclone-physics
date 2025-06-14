@@ -19,6 +19,8 @@
 // Include the timing functions
 #include "timing.h"
 
+#include <iostream>
+
 // Forward declaration of the function that will return the
 // application object for this particular demo. This should be
 // implemented in the demo's .cpp file.
@@ -103,6 +105,7 @@ void motion(int x, int y)
  */
 int main(int argc, char** argv)
 {
+    std::cout << "Main function started!" << std::endl;
     // Set up GLUT and the timers
     glutInit(&argc, argv);
     TimingData::init();
