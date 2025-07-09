@@ -15,6 +15,8 @@
 #include "../app2.h"
 #include "../timing2.h"
 
+#include <iostream>
+
 #include <stdio.h>
 #include <cassert>
 
@@ -262,6 +264,7 @@ BlobDemo::BlobDemo()
 xAxis(0), yAxis(0),
 world(PLATFORM_COUNT+BLOB_COUNT, PLATFORM_COUNT)
 {
+    std::cout << "DISPLAY TEST" << std::endl;
     // Create the blob storage
     blobs = new cyclone2::Particle2[BLOB_COUNT];
     cyclone2::Random r;
@@ -346,6 +349,7 @@ BlobDemo::~BlobDemo()
 
 void BlobDemo::display()
 {
+    std::cout << "DISPLAY TEST" << std::endl;
     cyclone2::Vector3 pos = blobs[0].getPosition();
 
     // Clear the view port and set the camera direction
@@ -399,6 +403,7 @@ void BlobDemo::display()
 
 void BlobDemo::update()
 {
+    std::cout << "UPDATE TEST" << std::endl;
     // Clear accumulators
     world.startFrame();
 
