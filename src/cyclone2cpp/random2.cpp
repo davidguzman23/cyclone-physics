@@ -123,18 +123,18 @@ real Random::randomBinomial(real scale)
     return (randomReal()-randomReal())*scale;
 }
 
-// Quaternion Random::randomQuaternion()
-// {
-//     Quaternion q(
-//         randomReal(),
-//         randomReal(),
-//         randomReal(),
-//         randomReal()
-//     );
+Quaternion Random::randomQuaternion()
+{
+    Quaternion q(
+        randomReal(),
+        randomReal(),
+        randomReal(),
+        randomReal()
+    );
 
-//     q.normalise();
-//     return q;
-// }
+    q.normalize();
+    return q;
+}
 
 Vector3 Random::randomVector(real scale)
 {

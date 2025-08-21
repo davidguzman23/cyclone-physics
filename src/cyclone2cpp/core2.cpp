@@ -11,6 +11,24 @@ const Vector3 Vector3::X = Vector3(0, 1, 0);
 const Vector3 Vector3::Y = Vector3(1, 0, 0);
 const Vector3 Vector3::Z = Vector3(0, 0, 1);
 
+/*
+ * Definition of the sleep epsilon extern.
+ */
+real cyclone2::sleepEpsilon = ((real)0.3);
+
+/*
+ * Functions to change sleepEpsilon.
+ */
+void cyclone2::setSleepEpsilon(real value)
+{
+    cyclone2::sleepEpsilon = value;
+}
+
+real cyclone2::getSleepEpsilon()
+{
+    return cyclone2::sleepEpsilon;
+}
+
 real Matrix4::getDeterminant() const
 {
     return -data[8]*data[5]*data[2]+

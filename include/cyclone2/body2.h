@@ -1,12 +1,17 @@
-
+/**
+ * @file
+ *
+ * This file contains the definitions for the rigid body class, the
+ * basic building block of all the physics system.
+ */
 
 #ifndef CYCLONE_BODY_H
 #define CYCLONE_BODY_H
 
 #include "core2.h"
 
-namespace cyclone2
-{
+namespace cyclone2 {
+
     /**
      * A rigid body is the basic simulation object in the physics 
      * core.
@@ -26,6 +31,9 @@ namespace cyclone2
     class RigidBody
     {
     public:
+
+        // ... Other RigidBody code as before ...
+
 
     protected:
         /**
@@ -419,7 +427,7 @@ namespace cyclone2
          * the current inverse inertia tensor of the rigid body. The
          * inertia tensor is expressed in world space.
          */
-        void getInverseInertiaTensorWorld(Matrix3 *getInverseInertiaTensor) const;
+        void getInverseInertiaTensorWorld(Matrix3 *inverseInertiaTensor) const;
 
         /**
          * Gets a copy of the current inverse inertia tensor of the

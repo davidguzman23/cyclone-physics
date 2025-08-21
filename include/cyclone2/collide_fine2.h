@@ -160,7 +160,7 @@ namespace cyclone2 {
          */
         static bool boxAndHalfSpace(
             const CollisionBox &box,
-            const CollisionPlane &place);
+            const CollisionPlane &plane);
     };
 
 

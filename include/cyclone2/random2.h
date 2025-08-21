@@ -99,7 +99,7 @@ namespace cyclone2 {
          * Returns a random orientation (i.e. normalized) quaternion.
          */
 
-        /* Quaternion randomQuaternion(); */
+         Quaternion randomQuaternion(); 
 
         private:
             // Internal mechanics

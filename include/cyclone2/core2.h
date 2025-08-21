@@ -5,21 +5,61 @@
 
 namespace cyclone2 {
 
+    /**
+     * Holds the value for energy under which a body will be put to
+     * sleep. This is a global value for the whole solution.  By
+     * default it is 0.1, which is fine for simulation when gravity is
+     * about 20 units per second squared, masses are about one, and
+     * other forces are around that of gravity. It may need tweaking
+     * if your simulation is drastically different to this.
+     */
+    extern real sleepEpsilon;
+
+    /**
+     * Sets the current sleep epsilon value: the kinetic energy under
+     * which a body may be put to sleep. Bodies are put to sleep if
+     * they appear to have a stable kinetic energy less than this
+     * value. For simulations that often have low values (such as slow
+     * moving, or light objects), this may need reducing.
+     *
+     * The value is global; all bodies will use it.
+     *
+     * @see sleepEpsilon
+     *
+     * @see getSleepEpsilon
+     *
+     * @param value The sleep epsilon value to use from this point
+     * on.
+     */
+    void setSleepEpsilon(real value);
+
+    /**
+     * Gets the current value of the sleep epsilon parameter.
+     *
+     * @see sleepEpsilon
+     *
+     * @see setSleepEpsilon
+     *
+     * @return The current value of the parameter.
+     */
+    real getSleepEpsilon();
+
+
     class Vector3 
     {
-        public:
+    public:
             
-            real x;
+        real x;
 
-            real y;
+        real y;
 
-            real z;
+        real z;
 
-        private: 
+    private: 
 
-            real pad;
+        real pad;
 
-        public:
+    public:
 
             Vector3() : x(0), y(0), z(0) {}
 
@@ -37,15 +77,15 @@ namespace cyclone2 {
 
             real operator[](unsigned i) const
             {
-                if ( i == 0 ) return x;
-                if ( i == 1 ) return y;
+                if (i == 0) return x;
+                if (i == 1) return y;
                 return z;
             }
 
             real& operator[](unsigned i) 
             {
-                if ( i == 0) return x;
-                if ( i == 1) return y;
+                if (i == 0) return x;
+                if (i == 1) return y;
                 return z;
             }
 
@@ -91,6 +131,15 @@ namespace cyclone2 {
                 return Vector3(x*value, y*value, z*value);
             }
 
+            /**
+             * Calculates and returns a component-wise product of this
+             * vector with the given vector.
+             */
+            Vector3 componentProduct(const Vector3 &v) const
+            {
+                return Vector3(x*v.x, y*v.y, z*v.z);
+            }
+
             /* Component Product Set */
             void componentProductUpdate(const Vector3 &v)
             {
@@ -99,16 +148,11 @@ namespace cyclone2 {
                 z *= v.z;
             }
 
-            Vector3 componentProduct(const Vector3 &v) const
-            {
-                return Vector3(x*v.x, y*v.y, z*v.z);
-            }
-
             /**
             * Calculates and returns the vector product of this vector
             * with the given vector.
             */
-            Vector3 vectorProduct(const Vector3& v) const
+            Vector3 vectorProduct(const Vector3 &v) const
             {
                 return Vector3( y * v.z - z * v.y,
                                 z * v.x - x * v.z,
@@ -119,7 +163,7 @@ namespace cyclone2 {
             * Updates this vector to be the vector product of its current
             * value and the given vector.
             */
-            void operator%=(const Vector3& v) 
+            void operator%=(const Vector3 &v) 
             {
                 *this = vectorProduct(v);
             }
@@ -128,7 +172,7 @@ namespace cyclone2 {
             * Calculates and returns the vector product of this vector
             * with the given vector.
             */
-            Vector3 operator%(const Vector3& v) const
+            Vector3 operator%(const Vector3 &v) const
             {
                 return Vector3( y * v.z - z * v.y,
                                 z * v.x - x * v.z,
@@ -148,7 +192,7 @@ namespace cyclone2 {
             * Calculates and returns the scalar product of this vector
             * with the given vector.
             */
-            real operator*(const Vector3 &v) const
+            real operator *(const Vector3 &v) const // <---- Does the space matter?
             {
                 return x*v.x + y*v.y + z*v.z;
             }
@@ -188,7 +232,7 @@ namespace cyclone2 {
                 }
             }
 
-            /* this is derefenrenced because this returns a pointer */
+            /* Turns a non-zero vector into a vector of unit length. this is derefenrenced because "this" returns a pointer */
             void normalize()
             {
                 real l = magnitude();
@@ -392,7 +436,6 @@ namespace cyclone2 {
             i *= d;
             j *= d;
             k *= d;
-
         }
 
         /**
@@ -400,7 +443,7 @@ namespace cyclone2 {
          * 
          * @param multiplier The quaternion by which to multiply.
          */
-        void operator*=(const Quaternion &multiplier)
+        void operator *=(const Quaternion &multiplier) // <-- Space thing
         {
             Quaternion q = *this;
             r = q.r*multiplier.r - q.i*multiplier.i -
@@ -440,8 +483,6 @@ namespace cyclone2 {
             Quaternion q(0, vector.x, vector.y, vector.z);
             (*this) *= q;
         }
-
-
     };
 
     /**
@@ -507,7 +548,7 @@ namespace cyclone2 {
          * 
          * @param vector The vector to transform
          */
-        Vector3 operator*( const Vector3 &vector) const
+        Vector3 operator*(const Vector3 &vector) const
         {
             return Vector3(
                 vector.x * data[0] +
@@ -670,23 +711,23 @@ namespace cyclone2 {
          * Sets this matrix to be the rotation matrix corresponding to
          * the given quaternion.
          */
-        // void setOrientationAndPos(const Quaternion &q, const Vector3 &pos)
-        // {
-        //     data[0] = 1 - (2*q.j*q.j + 2*q.k*q.k);
-        //     data[1] = 2*q.i*q.j + 2*q.k*q.r;
-        //     data[2] = 2*q.i*q.k - 2*q.j*q.r;
-        //     data[3] = pos.x;
+        void setOrientationAndPos(const Quaternion &q, const Vector3 &pos)
+        {
+            data[0] = 1 - (2*q.j*q.j + 2*q.k*q.k);
+            data[1] = 2*q.i*q.j + 2*q.k*q.r;
+            data[2] = 2*q.i*q.k - 2*q.j*q.r;
+            data[3] = pos.x;
 
-        //     data[4] = 2*q.i*q.j - 2*q.k*q.r;
-        //     data[5] = 1 - (2*q.i*q.i  + 2*q.k*q.k);
-        //     data[6] = 2*q.j*q.k + 2*q.i*q.r;
-        //     data[7] = pos.y;
+            data[4] = 2*q.i*q.j - 2*q.k*q.r;
+            data[5] = 1 - (2*q.i*q.i  + 2*q.k*q.k);
+            data[6] = 2*q.j*q.k + 2*q.i*q.r;
+            data[7] = pos.y;
 
-        //     data[8] = 2*q.i*q.k + 2*q.j*q.r;
-        //     data[9] = 2*q.j*q.k - 2*q.i*q.r;
-        //     data[10] = 1 - (2*q.i*q.i  + 2*q.j*q.j);
-        //     data[11] = pos.z;
-        // }
+            data[8] = 2*q.i*q.k + 2*q.j*q.r;
+            data[9] = 2*q.j*q.k - 2*q.i*q.r;
+            data[10] = 1 - (2*q.i*q.i  + 2*q.j*q.j);
+            data[11] = pos.z;
+        }
 
         /**
          * Fills the given array with this transform matrix, so it is
@@ -694,7 +735,7 @@ namespace cyclone2 {
          * major format, so that the values are transposed as they are
          * written.
          */
-        void fillGArray(float array[16]) const
+        void fillGLArray(float array[16]) const
         {
             array[0] = (float)data[0];
             array[1] = (float)data[4];
@@ -747,7 +788,7 @@ namespace cyclone2 {
          * up its columns.
          */
         Matrix3(const Vector3 &compOne, const Vector3 &compTwo,
-            const Vector3 compThree)
+            const Vector3 &compThree)
         {
             setComponents(compOne, compTwo, compThree);
         }
@@ -832,6 +873,7 @@ namespace cyclone2 {
             data[6] = compOne.z;
             data[7] = compTwo.z;
             data[8] = compThree.z;
+            
         }
 
         /**
